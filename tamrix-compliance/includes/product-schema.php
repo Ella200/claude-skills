@@ -17,7 +17,7 @@ function tamrix_register_reagent_meta(): void {
     register_post_meta( '', '_tamrix_molecular_weight', array_merge( $shared, [
         'type'              => 'number',
         'description'       => 'Molecular weight of the reagent in g/mol.',
-        'sanitize_callback' => fn( $v ) => sanitize_text_field( (string) $v ),
+        'sanitize_callback' => fn( $v ) => max( 0.0, (float) $v ),
     ] ) );
 
     register_post_meta( '', '_tamrix_purity', array_merge( $shared, [
@@ -77,7 +77,7 @@ function tamrix_render_reagent_meta_box( WP_Post $post ): void {
         $value = esc_attr( get_post_meta( $post->ID, $key, true ) );
         $attrs = sprintf( 'type="%s" placeholder="%s"', esc_attr( $field['type'] ), esc_attr( $field['placeholder'] ) );
         if ( isset( $field['step'] ) ) {
-            $attrs .= sprintf( ' step="%s" min="%s"', esc_attr( $field['step'] ), esc_attr( $field['min'] ) );
+            $attrs .= sprintf( ' step="%s" min="%s"', esc_attr( $field['step'] ), esc_attr( $field['min'] ?? '0' ) );
         }
         printf(
             '<tr>
