@@ -14,17 +14,18 @@ function tamrix_register_reagent_meta(): void {
         'auth_callback'  => fn() => current_user_can( 'edit_posts' ),
     ];
 
-    register_post_meta( 'post', '_tamrix_molecular_weight', array_merge( $shared, [
+    register_post_meta( '', '_tamrix_molecular_weight', array_merge( $shared, [
+        'type'              => 'number',
         'description'       => 'Molecular weight of the reagent in g/mol.',
         'sanitize_callback' => fn( $v ) => sanitize_text_field( (string) $v ),
     ] ) );
 
-    register_post_meta( 'post', '_tamrix_purity', array_merge( $shared, [
+    register_post_meta( '', '_tamrix_purity', array_merge( $shared, [
         'description'       => 'Purity percentage of the reagent.',
         'sanitize_callback' => 'sanitize_text_field',
     ] ) );
 
-    register_post_meta( 'post', '_tamrix_storage', array_merge( $shared, [
+    register_post_meta( '', '_tamrix_storage', array_merge( $shared, [
         'description'       => 'Recommended storage conditions for the reagent.',
         'sanitize_callback' => 'sanitize_text_field',
     ] ) );
