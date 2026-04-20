@@ -116,3 +116,91 @@ function tamrix_enqueue_admin_assets( string $hook ): void {
         '1.0.0'
     );
 }
+
+/**
+ * P1: Blocks checkout compliance gate (Store API path).
+ *
+ * Fires for orders placed via the WooCommerce Blocks checkout.
+ * Throws RouteException (HTTP 422) if agreement param is absent.
+ * Saves compliance meta identical to the shortcode path.
+ */
+add_action(
+    'woocommerce_store_api_checkout_update_order_from_request',
+    'tamrix_blocks_checkout_compliance',
+    10,
+    2
+);
+function tamrix_blocks_checkout_compliance( \WC_Order $order, \WP_REST_Request $request ): void {
+    $agreed = (bool) $request->get_param( 'tamrix_research_use_only' );
+
+    if ( ! $agreed ) {
+        throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
+            'tamrix_compliance_required',
+            __( 'You must agree to the Tamrix Peptide Research Use Only terms before placing your order.', 'tamrix' ),
+            422
+        );
+    }
+
+    $order->update_meta_data( '_tamrix_compliance_agreed',    '1' );
+    $order->update_meta_data( '_tamrix_compliance_agreed_at', current_time( 'mysql' ) );
+    $order->update_meta_data( '_tamrix_compliance_source',    'blocks_checkout' );
+}
+
+/**
+ * P2: REST API compliance gate — caller-aware.
+ *
+ * Admin/shop-manager callers: flagged with source metadata, order allowed.
+ * The flag surfaces in the order admin as "Not confirmed" (existing display logic).
+ * Ops staff creating manual orders are accountable by role; blocking them
+ * would break ERP integrations and WP-CLI workflows.
+ *
+ * External callers (consumer key / application password, non-admin):
+ * HARD BLOCK (HTTP 403) unless `tamrix_research_use_only: true` is in the
+ * request body — the external system is responsible for presenting the
+ * agreement to the buyer before calling this endpoint.
+ *
+ * @param WC_Order        $order   The order object being created.
+ * @param WP_REST_Request $request The originating REST request.
+ * @return WC_Order|\WP_Error
+ */
+add_filter(
+    'woocommerce_rest_pre_insert_shop_order_object',
+    'tamrix_rest_api_compliance',
+    10,
+    2
+);
+function tamrix_rest_api_compliance( \WC_Order $order, \WP_REST_Request $request ): \WC_Order|\WP_Error {
+    $caller_is_trusted = current_user_can( 'manage_woocommerce' ) || current_user_can( 'edit_shop_orders' );
+    $agreed            = (bool) $request->get_param( 'tamrix_research_use_only' );
+
+    if ( $caller_is_trusted ) {
+        // Internal ops path: flag source, do not block.
+        // "_tamrix_compliance_agreed" intentionally left absent so the admin
+        // order view shows "Not confirmed" — prompting manual follow-up.
+        $order->update_meta_data( '_tamrix_compliance_source', 'admin_rest_api' );
+        $order->update_meta_data( '_tamrix_compliance_note',
+            'Order created via admin REST API. Research Use Only agreement not captured at order level.'
+        );
+        return $order;
+    }
+
+    if ( ! $agreed ) {
+        // External caller without agreement param — hard block.
+        return new \WP_Error(
+            'tamrix_compliance_required',
+            __(
+                'Tamrix Peptide API orders require tamrix_research_use_only: true in the request body. '
+                . 'The external system must present the Research Use Only agreement to the buyer before submitting.',
+                'tamrix'
+            ),
+            [ 'status' => 403 ]
+        );
+    }
+
+    // External caller confirmed agreement.
+    $order->update_meta_data( '_tamrix_compliance_agreed',    '1' );
+    $order->update_meta_data( '_tamrix_compliance_agreed_at', current_time( 'mysql' ) );
+    $order->update_meta_data( '_tamrix_compliance_source',    'rest_api' );
+
+    return $order;
+}
