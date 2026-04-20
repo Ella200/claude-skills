@@ -74,6 +74,10 @@ function tamrix_display_compliance_in_admin( WC_Order $order ): void {
         echo '<span class="tamrix-status-not-confirmed">'
             . esc_html__( 'Not confirmed', 'tamrix' )
             . '</span>';
+        $note = get_post_meta( $order->get_id(), '_tamrix_compliance_note', true );
+        if ( $note ) {
+            echo ' <em style="color:#6c757d;font-size:0.85em;">(' . esc_html( $note ) . ')</em>';
+        }
     }
 
     echo '</p>';
@@ -102,13 +106,19 @@ function tamrix_enqueue_checkout_assets(): void {
  */
 add_action( 'admin_enqueue_scripts', 'tamrix_enqueue_admin_assets' );
 function tamrix_enqueue_admin_assets( string $hook ): void {
-    if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ], true ) ) {
+    // Legacy CPT-based orders (WC < 7.1 or HPOS disabled)
+    $screen     = get_current_screen();
+    $is_legacy  = in_array( $hook, [ 'post.php', 'post-new.php' ], true )
+                  && $screen
+                  && 'shop_order' === $screen->post_type;
+
+    // High-Performance Order Storage screen (WC 7.1+ with HPOS enabled)
+    $is_hpos    = 'woocommerce_page_wc-orders' === $hook;
+
+    if ( ! $is_legacy && ! $is_hpos ) {
         return;
     }
-    $screen = get_current_screen();
-    if ( ! $screen || 'shop_order' !== $screen->post_type ) {
-        return;
-    }
+
     wp_enqueue_style(
         'tamrix-admin',
         plugin_dir_url( dirname( __FILE__ ) ) . 'assets/css/admin.css',
@@ -170,7 +180,11 @@ add_filter(
     2
 );
 function tamrix_rest_api_compliance( \WC_Order $order, \WP_REST_Request $request ): \WC_Order|\WP_Error {
-    $caller_is_trusted = current_user_can( 'manage_woocommerce' ) || current_user_can( 'edit_shop_orders' );
+    // Role allowlist: capability checks avoided because marketplace plugins (Dokan, WCFM, WC Vendors)
+    // can grant edit_shop_orders to vendor roles, which would silently bypass the hard block.
+    $user              = wp_get_current_user();
+    $trusted_roles     = [ 'administrator', 'shop_manager' ];
+    $caller_is_trusted = ! empty( array_intersect( $trusted_roles, (array) $user->roles ) );
     $agreed            = (bool) $request->get_param( 'tamrix_research_use_only' );
 
     if ( $caller_is_trusted ) {
