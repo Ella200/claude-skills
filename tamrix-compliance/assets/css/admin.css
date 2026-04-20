@@ -1,0 +1,9 @@
+.tamrix-status-agreed {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.tamrix-status-not-confirmed {
+    color: #dc3545;
+    font-weight: 600;
+}

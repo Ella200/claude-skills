@@ -43,6 +43,8 @@ function tamrix_validate_compliance_checkbox(): void {
 /**
  * Save compliance status to order meta for audit trail.
  */
+// Note: this hook does not fire on the WooCommerce Blocks checkout.
+// For Blocks compatibility, implement woocommerce_store_api_checkout_update_order_from_request.
 add_action( 'woocommerce_checkout_update_order_meta', 'tamrix_save_compliance_meta' );
 function tamrix_save_compliance_meta( int $order_id ): void {
     if ( ! empty( $_POST['tamrix_research_use_only'] ) ) {
@@ -62,14 +64,14 @@ function tamrix_display_compliance_in_admin( WC_Order $order ): void {
     echo '<p><strong>' . esc_html__( 'TamrixLab Research Use Only:', 'tamrix' ) . '</strong> ';
 
     if ( '1' === $agreed ) {
-        echo '<span style="color:#28a745;">'
+        echo '<span class="tamrix-status-agreed">'
             . esc_html__( 'Agreed', 'tamrix' )
             . '</span>';
         if ( $agreed_at ) {
             echo ' <em>(' . esc_html( $agreed_at ) . ')</em>';
         }
     } else {
-        echo '<span style="color:#dc3545;">'
+        echo '<span class="tamrix-status-not-confirmed">'
             . esc_html__( 'Not confirmed', 'tamrix' )
             . '</span>';
     }
@@ -92,5 +94,25 @@ function tamrix_enqueue_checkout_assets(): void {
         [ 'jquery' ],
         '1.0.0',
         true
+    );
+}
+
+/**
+ * Enqueue admin CSS for compliance status display in order detail screens.
+ */
+add_action( 'admin_enqueue_scripts', 'tamrix_enqueue_admin_assets' );
+function tamrix_enqueue_admin_assets( string $hook ): void {
+    if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ], true ) ) {
+        return;
+    }
+    $screen = get_current_screen();
+    if ( ! $screen || 'shop_order' !== $screen->post_type ) {
+        return;
+    }
+    wp_enqueue_style(
+        'tamrix-admin',
+        plugin_dir_url( dirname( __FILE__ ) ) . 'assets/css/admin.css',
+        [],
+        '1.0.0'
     );
 }
