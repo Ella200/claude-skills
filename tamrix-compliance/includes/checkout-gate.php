@@ -7,8 +7,8 @@ defined( 'ABSPATH' ) || exit;
 add_action( 'woocommerce_review_order_before_submit', 'tamrix_render_compliance_checkbox' );
 function tamrix_render_compliance_checkbox(): void {
     $label = wp_kses(
-        '<strong>TamrixLab Research Use Only Agreement.</strong> '
-        . 'I confirm that all products purchased from TamrixLab are intended solely '
+        '<strong>LuraBio Research Use Only Agreement.</strong> '
+        . 'I confirm that all products purchased from LuraBio are intended solely '
         . 'for laboratory research purposes. These reagents are not for use in humans, '
         . 'animals, food, cosmetics, or any in vivo applications.',
         [ 'strong' => [] ]
@@ -32,7 +32,7 @@ function tamrix_validate_compliance_checkbox(): void {
     if ( empty( $_POST['tamrix_research_use_only'] ) ) {
         wc_add_notice(
             __(
-                'You must agree to the TamrixLab Research Use Only terms before placing your order.',
+                'You must agree to the LuraBio Research Use Only terms before placing your order.',
                 'tamrix'
             ),
             'error'
@@ -61,7 +61,7 @@ function tamrix_display_compliance_in_admin( WC_Order $order ): void {
     $agreed    = get_post_meta( $order->get_id(), '_tamrix_compliance_agreed', true );
     $agreed_at = get_post_meta( $order->get_id(), '_tamrix_compliance_agreed_at', true );
 
-    echo '<p><strong>' . esc_html__( 'TamrixLab Research Use Only:', 'tamrix' ) . '</strong> ';
+    echo '<p><strong>' . esc_html__( 'LuraBio Research Use Only:', 'tamrix' ) . '</strong> ';
 
     if ( '1' === $agreed ) {
         echo '<span class="tamrix-status-agreed">'
@@ -146,7 +146,7 @@ function tamrix_blocks_checkout_compliance( \WC_Order $order, \WP_REST_Request $
     if ( ! $agreed ) {
         throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException(
             'tamrix_compliance_required',
-            __( 'You must agree to the Tamrix Peptide Research Use Only terms before placing your order.', 'tamrix' ),
+            __( 'You must agree to the LuraBio Research Use Only terms before placing your order.', 'tamrix' ),
             422
         );
     }
@@ -203,7 +203,7 @@ function tamrix_rest_api_compliance( \WC_Order $order, \WP_REST_Request $request
         return new \WP_Error(
             'tamrix_compliance_required',
             __(
-                'Tamrix Peptide API orders require tamrix_research_use_only: true in the request body. '
+                'LuraBio API orders require tamrix_research_use_only: true in the request body. '
                 . 'The external system must present the Research Use Only agreement to the buyer before submitting.',
                 'tamrix'
             ),

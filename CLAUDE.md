@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-**Tamrix Peptide** (tamrixpeptide.com) — B2B laboratory reagent supplier platform.
+**LuraBio** (lurabio.com) — B2B laboratory reagent supplier platform.
 SRE priority: zero-bypass compliance gate, documented audit trails.
 
 Stack: WordPress 6.5 + WooCommerce 8.x (Blocks-ready), PHP 8.1, MySQL, AWS S3, Cloudflare, Playwright.
@@ -19,7 +19,7 @@ npm install
 
 # Run compliance gate tests (requires WP env at TEST_BASE_URL)
 npm test
-TEST_BASE_URL=https://staging.tamrixpeptide.com TEST_PRODUCT_ID=42 npm test
+TEST_BASE_URL=https://staging.lurabio.com TEST_PRODUCT_ID=42 npm test
 
 # Run tests headed (useful for debugging WooCommerce checkout flow)
 npm run test:headed
@@ -101,7 +101,7 @@ Tests cover: checkbox visibility, label text, server-side block when unchecked, 
 
 ## Brand & Copy
 
-Current brand string in PHP: `TamrixLab` (checkout-gate.php lines 10, 35, 64).
-Project is transitioning to `Tamrix Peptide` — update these strings before go-live on tamrixpeptide.com.
+Brand string in PHP: `LuraBio` — used in checkout label, error messages, and admin order display.
+Domain: lurabio.com. All user-facing strings updated. Function prefixes (`tamrix_`) and meta keys (`_tamrix_*`) are internal identifiers — do not rename them without a database migration plan.
 
 Text domain for i18n: `tamrix`. The `Text Domain` plugin header is missing — add it before any translated string ships.

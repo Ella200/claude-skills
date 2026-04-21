@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Tamrix Compliance
+ * Plugin Name: LuraBio Compliance
  * Description: Research Use Only checkout gate and Technical Reagent product schema.
  * Version:     1.0.0
  * Requires PHP: 8.1
