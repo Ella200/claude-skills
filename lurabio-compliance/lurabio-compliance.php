@@ -9,7 +9,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'TAMRIX_DIR', plugin_dir_path( __FILE__ ) );
+define( 'LURABIO_DIR', plugin_dir_path( __FILE__ ) );
 
-require_once TAMRIX_DIR . 'includes/checkout-gate.php';
-require_once TAMRIX_DIR . 'includes/product-schema.php';
+require_once LURABIO_DIR . 'includes/checkout-gate.php';
+require_once LURABIO_DIR . 'includes/product-schema.php';
