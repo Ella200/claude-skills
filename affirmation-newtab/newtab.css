@@ -582,7 +582,7 @@ body::before {
 .habit-label.checked .habit-check-box {
   background: var(--text);
   border-color: var(--text);
-  color: var(--bg);
+  color: var(--btn-text);
 }
 
 .habit-text { font-size: 13px; color: var(--text); flex: 1; transition: color 0.15s; }
@@ -657,7 +657,7 @@ body::before {
 }
 .affirm-item:last-child { border-bottom: none; }
 .affirm-item:hover { background: var(--bg2); }
-.affirm-item.custom { background: #FDFCFA; }
+.affirm-item.custom { background: var(--bg2); }
 
 .affirm-item-pill {
   font-size: 8px;
@@ -720,4 +720,4 @@ body::before {
 .btn-ghost:hover { color: var(--text); background: var(--border); }
 .btn-primary { background: var(--btn-bg); color: var(--btn-text); }
 .btn-primary:active { transform: scale(0.98); }
-.btn-primary:hover { background: #333333; }
+.btn-primary:hover { filter: brightness(0.88); }
