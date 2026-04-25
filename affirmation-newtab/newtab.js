@@ -403,7 +403,7 @@ function init() {
 
   document.getElementById("modal-save").addEventListener("click", () => {
     const data = getData();
-    document.querySelectorAll(".habit-input").forEach(inp =>
+    document.querySelectorAll("#habit-inputs .habit-input").forEach(inp =>
       data.habits[parseInt(inp.dataset.index, 10)] = inp.value.trim());
     saveData(data); renderHabits(data);
     document.getElementById("modal").classList.add("hidden");
