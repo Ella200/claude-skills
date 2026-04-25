@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="ocean">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Affirm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="newtab.css" />
+</head>
+<body>
+
+  <!-- Top-right controls -->
+  <div class="top-controls">
+    <button id="sound-btn" class="icon-btn" title="Toggle sound">
+      <svg id="sound-on-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+      </svg>
+      <svg id="sound-off-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <line x1="23" y1="9" x2="17" y2="15"></line>
+        <line x1="17" y1="9" x2="23" y2="15"></line>
+      </svg>
+    </button>
+    <button id="settings-btn" class="icon-btn" title="Settings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Settings drawer -->
+  <aside id="settings-drawer" class="settings-drawer hidden">
+    <div class="drawer-header">
+      <span class="drawer-title">Customize</span>
+      <button id="close-drawer" class="icon-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-label">Theme</div>
+      <div class="theme-grid">
+        <button class="theme-swatch active" data-theme="ocean" title="Ocean Depth">
+          <span class="swatch-preview ocean-preview"></span>
+          <span class="swatch-name">Ocean</span>
+        </button>
+        <button class="theme-swatch" data-theme="forest" title="Midnight Forest">
+          <span class="swatch-preview forest-preview"></span>
+          <span class="swatch-name">Forest</span>
+        </button>
+        <button class="theme-swatch" data-theme="cosmic" title="Cosmic Night">
+          <span class="swatch-preview cosmic-preview"></span>
+          <span class="swatch-name">Cosmic</span>
+        </button>
+        <button class="theme-swatch" data-theme="ember" title="Ember">
+          <span class="swatch-preview ember-preview"></span>
+          <span class="swatch-name">Ember</span>
+        </button>
+        <button class="theme-swatch" data-theme="roseNoir" title="Rose Noir">
+          <span class="swatch-preview roseNoir-preview"></span>
+          <span class="swatch-name">Rose</span>
+        </button>
+        <button class="theme-swatch" data-theme="charcoal" title="Charcoal">
+          <span class="swatch-preview charcoal-preview"></span>
+          <span class="swatch-name">Charcoal</span>
+        </button>
+        <button class="theme-swatch" data-theme="parchment" title="Warm Parchment">
+          <span class="swatch-preview parchment-preview"></span>
+          <span class="swatch-name">Parchment</span>
+        </button>
+        <button class="theme-swatch" data-theme="lavender" title="Lavender Morning">
+          <span class="swatch-preview lavender-preview"></span>
+          <span class="swatch-name">Lavender</span>
+        </button>
+        <button class="theme-swatch" data-theme="golden" title="Golden Hour">
+          <span class="swatch-preview golden-preview"></span>
+          <span class="swatch-name">Golden</span>
+        </button>
+        <button class="theme-swatch" data-theme="steel" title="Steel Blue">
+          <span class="swatch-preview steel-preview"></span>
+          <span class="swatch-name">Steel</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-label">Sound</div>
+      <div class="sound-options">
+        <button class="sound-opt active" data-sound="none">None</button>
+        <button class="sound-opt" data-sound="rain">Rain</button>
+        <button class="sound-opt" data-sound="brown">Brown noise</button>
+        <button class="sound-opt" data-sound="tone">Soft tone</button>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-label">Auto-rotate</div>
+      <div class="rotate-options">
+        <button class="rotate-opt active" data-rotate="0">Off</button>
+        <button class="rotate-opt" data-rotate="300000">5 min</button>
+        <button class="rotate-opt" data-rotate="600000">10 min</button>
+        <button class="rotate-opt" data-rotate="1800000">30 min</button>
+        <button class="rotate-opt" data-rotate="custom">Custom</button>
+      </div>
+      <div id="custom-rotate-row" class="custom-rotate-row hidden">
+        <input id="custom-rotate-input" class="habit-input" type="number" min="1" max="120"
+          placeholder="Minutes (1–120)" />
+        <button id="custom-rotate-btn" class="btn-primary">Set</button>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-label">Affirmations</div>
+      <button id="manage-affirmations-btn" class="drawer-action-btn">
+        Manage affirmations
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="container">
+
+    <section class="clock-section">
+      <div id="time" class="time">00:00</div>
+      <div id="date" class="date">Thursday, April 23</div>
+    </section>
+
+    <section class="affirmation-section">
+      <div class="divider"></div>
+      <div class="affirmation-meta">
+        <span id="category-pill" class="category-pill">Growth</span>
+      </div>
+      <blockquote id="affirmation" class="affirmation-text">Loading...</blockquote>
+      <div class="affirmation-actions">
+        <button id="refresh-btn" class="refresh-btn" title="Next affirmation">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+        </button>
+        <span id="affirmation-counter" class="affirmation-counter"></span>
+      </div>
+    </section>
+
+    <section class="habits-section">
+      <div class="habits-card">
+        <div class="habits-header">
+          <div class="habits-title-row">
+            <div class="progress-ring-wrap">
+              <svg width="36" height="36" viewBox="0 0 36 36">
+                <circle class="progress-ring-bg" cx="18" cy="18" r="14" fill="none" stroke-width="2.5"/>
+                <circle id="progress-ring" class="progress-ring-fill" cx="18" cy="18" r="14" fill="none" stroke-width="2.5"
+                  stroke-dasharray="87.96" stroke-dashoffset="87.96"/>
+              </svg>
+              <span class="progress-label" id="progress-label">0</span>
+            </div>
+            <span class="habits-label">Today's habits</span>
+          </div>
+          <span class="streak-badge">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 23a7 7 0 0 1-5.468-11.41l.028-.032 2.174-2.31-.522 2.805A4.5 4.5 0 0 0 12 17.5a4.5 4.5 0 0 0 4.5-4.5c0-1.29-.55-2.5-1.5-3.34l-.43-.38.13.57c.18.8.3 1.65.3 2.16 0 1.1-.9 2-2 2s-2-.9-2-2c0-2.34 1.57-4.4 3.87-5.37l1.13-.47-.6 1.07A6.97 6.97 0 0 1 19 12a7 7 0 0 1-7 11z"/></svg>
+            <span id="streak-count">0</span> day streak
+          </span>
+        </div>
+        <ul class="habits-list" id="habits-list"></ul>
+        <div class="habits-footer">
+          <button id="edit-habits-btn" class="edit-habits-btn">✦ Edit habits</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Affirmation manager modal -->
+  <div id="affirm-modal" class="modal hidden">
+    <div class="modal-box modal-wide">
+      <h2 class="modal-title">My Affirmations</h2>
+      <p class="modal-sub">Add your own or hide ones you don't connect with.</p>
+
+      <div class="add-affirm-row">
+        <input id="new-affirm-input" class="habit-input" type="text" maxlength="120"
+          placeholder="Type your own affirmation and press Add…" />
+        <button id="add-affirm-btn" class="btn-primary">Add</button>
+      </div>
+
+      <div id="affirm-list" class="affirm-list"></div>
+
+      <div class="modal-actions">
+        <button id="affirm-modal-close" class="btn-primary">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Habit editor modal -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-box">
+      <h2 class="modal-title">Your habits</h2>
+      <p class="modal-sub">Up to 5 habits. Leave blank to hide.</p>
+      <div id="habit-inputs" class="habit-inputs"></div>
+      <div class="modal-actions">
+        <button id="modal-cancel" class="btn-ghost">Cancel</button>
+        <button id="modal-save" class="btn-primary">Save habits</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="affirmations.js"></script>
+  <script src="newtab.js"></script>
+</body>
+</html>
