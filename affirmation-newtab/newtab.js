@@ -348,7 +348,9 @@ function init() {
     btn.addEventListener("click", () => {
       const data = getData();
       data.theme = btn.dataset.theme;
-      saveData(data); applyTheme(data.theme);
+      saveData(data);
+      applyTheme(data.theme);
+      renderAffirmation(data);
     });
   });
 
