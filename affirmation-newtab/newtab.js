@@ -43,8 +43,9 @@ function getData() {
       sound:              d.sound               ?? "none",
       customAffirmations: d.customAffirmations  ?? [],
       deletedBuiltinIdx:  d.deletedBuiltinIdx   ?? [],
+      rotation:           d.rotation            ?? 0,
     };
-  } catch { return { habits: DEFAULT_HABITS, checks: {}, streak: 0, lastActiveDay: null, affirmationOffset: 0, theme: "ocean", sound: "none", customAffirmations: [], deletedBuiltinIdx: [] }; }
+  } catch { return { habits: DEFAULT_HABITS, checks: {}, streak: 0, lastActiveDay: null, affirmationOffset: 0, theme: "ocean", sound: "none", customAffirmations: [], deletedBuiltinIdx: [], rotation: 0 }; }
 }
 
 function saveData(data) {
@@ -182,6 +183,8 @@ function applyTheme(theme) {
 
 // ── Sound ─────────────────────────────────────
 let audioCtx = null, gainNode = null, nodesChain = [];
+const ROTATION_PRESETS = [0, 300000, 600000, 1800000];
+let rotationInterval = null;
 
 function stopSound() {
   const chainToStop = [...nodesChain];   // snapshot — don't capture by reference
@@ -248,6 +251,37 @@ function applySound(type) {
   } else {
     on.style.display = "none"; off.style.display = "block";
     btn.classList.remove("active");
+  }
+}
+
+function setRotation(ms) {
+  clearInterval(rotationInterval);
+  rotationInterval = null;
+
+  if (ms > 0) {
+    rotationInterval = setInterval(() => {
+      const d = getData();
+      d.affirmationOffset = (d.affirmationOffset || 0) + 1;
+      saveData(d);
+      animateAffirmation(d);
+    }, ms);
+  }
+
+  const isCustom = ms > 0 && !ROTATION_PRESETS.includes(ms);
+  document.querySelectorAll('.rotate-opt').forEach(btn => {
+    const val = btn.dataset.rotate;
+    const active = val === 'custom'
+      ? isCustom
+      : parseInt(val) === ms;
+    btn.classList.toggle('active', active);
+  });
+
+  const customRow = document.getElementById('custom-rotate-row');
+  if (customRow) {
+    customRow.classList.toggle('hidden', !isCustom);
+    if (isCustom) {
+      document.getElementById('custom-rotate-input').value = Math.round(ms / 60000);
+    }
   }
 }
 
@@ -323,11 +357,17 @@ function init() {
   renderHabits(data);
   renderStreak(data);
 
+  // Restore rotation
+  setRotation(data.rotation || 0);
+
   // Shuffle affirmation
   document.getElementById("refresh-btn").addEventListener("click", () => {
     const data = getData();
     data.affirmationOffset = (data.affirmationOffset || 0) + 1;
-    saveData(data); animateAffirmation(data);
+    saveData(data);
+    animateAffirmation(data);
+    // Reset rotation timer so it counts from now
+    if (data.rotation > 0) setRotation(data.rotation);
   });
 
   // Sound quick-toggle
@@ -361,6 +401,36 @@ function init() {
       data.sound = btn.dataset.sound;
       saveData(data); applySound(data.sound);
     });
+  });
+
+  // Auto-rotate preset buttons
+  document.querySelectorAll('.rotate-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.rotate;
+      if (val === 'custom') {
+        document.getElementById('custom-rotate-row').classList.remove('hidden');
+        document.getElementById('custom-rotate-input').focus();
+        document.querySelectorAll('.rotate-opt').forEach(b =>
+          b.classList.toggle('active', b.dataset.rotate === 'custom'));
+        return;
+      }
+      const ms = parseInt(val);
+      const d  = getData();
+      d.rotation = ms;
+      saveData(d);
+      setRotation(ms);
+    });
+  });
+
+  // Custom interval Set button
+  document.getElementById('custom-rotate-btn')?.addEventListener('click', () => {
+    const mins = parseInt(document.getElementById('custom-rotate-input').value, 10);
+    if (!mins || mins < 1 || mins > 120) return;
+    const ms = mins * 60000;
+    const d  = getData();
+    d.rotation = ms;
+    saveData(d);
+    setRotation(ms);
   });
 
   // Open affirmation manager
@@ -430,6 +500,14 @@ function init() {
     ["modal","affirm-modal"].forEach(id =>
       document.getElementById(id).classList.add("hidden"));
     document.getElementById("settings-drawer").classList.add("hidden");
+  });
+
+  // Reset rotation when tab becomes visible again
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      const d = getData();
+      if ((d.rotation || 0) > 0) setRotation(d.rotation);
+    }
   });
 }
 
