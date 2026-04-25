@@ -1,7 +1,8 @@
 const STORAGE_KEY   = "affirm_v2";
 const RING_CIRC     = 87.96;
 const DEFAULT_HABITS = ["Drink 8 glasses of water","Move for 20 minutes","Read for 15 minutes","",""];
-const THEMES        = ["midnight","chalk","cream","blush","sage","slate"];
+const THEMES        = ["ocean","forest","cosmic","ember","roseNoir","charcoal","parchment","lavender","golden","steel"];
+const DARK_THEMES   = new Set(["ocean","forest","cosmic","ember","roseNoir","charcoal"]);
 
 const CATEGORY_COLORS = {
   "Confidence": { bg:"#E1F3FE", text:"#1F6C9F" },
@@ -15,6 +16,13 @@ const CATEGORY_COLORS = {
   "Abundance":  { bg:"#EDF3EC", text:"#346538" },
   "Custom":     { bg:"#F7F6F3", text:"#787774" },
 };
+
+function getPillStyle(category, theme) {
+  if (DARK_THEMES.has(theme)) {
+    return { bg: 'var(--accent-bg)', text: 'var(--accent)' };
+  }
+  return CATEGORY_COLORS[category] || CATEGORY_COLORS["Custom"];
+}
 
 // ── Storage ──────────────────────────────────
 function todayKey() {
@@ -31,12 +39,12 @@ function getData() {
       streak:             d.streak             ?? 0,
       lastActiveDay:      d.lastActiveDay       ?? null,
       affirmationOffset:  d.affirmationOffset   ?? 0,
-      theme:              d.theme               ?? "midnight",
+      theme:              d.theme               ?? "ocean",
       sound:              d.sound               ?? "none",
       customAffirmations: d.customAffirmations  ?? [],
       deletedBuiltinIdx:  d.deletedBuiltinIdx   ?? [],
     };
-  } catch { return { habits: DEFAULT_HABITS, checks: {}, streak: 0, lastActiveDay: null, affirmationOffset: 0, theme: "midnight", sound: "none", customAffirmations: [], deletedBuiltinIdx: [] }; }
+  } catch { return { habits: DEFAULT_HABITS, checks: {}, streak: 0, lastActiveDay: null, affirmationOffset: 0, theme: "ocean", sound: "none", customAffirmations: [], deletedBuiltinIdx: [] }; }
 }
 
 function saveData(data) {
@@ -69,7 +77,7 @@ function renderAffirmation(data) {
   pill.textContent      = item.category;
   counter.textContent   = total ? `${idx + 1} / ${total}` : "";
 
-  const col = CATEGORY_COLORS[item.category] || CATEGORY_COLORS["Custom"];
+  const col = getPillStyle(item.category, data.theme);
   pill.style.background = col.bg;
   pill.style.color      = col.text;
 }
@@ -250,7 +258,7 @@ function renderAffirmList(data) {
 
   AFFIRMATIONS.forEach((item, i) => {
     if (data.deletedBuiltinIdx.includes(i)) return;
-    const col = CATEGORY_COLORS[item.category] || CATEGORY_COLORS["Custom"];
+    const col = getPillStyle(item.category, data.theme);
     const div = document.createElement("div");
     div.className = "affirm-item";
     div.innerHTML = `
