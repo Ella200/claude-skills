@@ -410,8 +410,6 @@ function init() {
       if (val === 'custom') {
         document.getElementById('custom-rotate-row').classList.remove('hidden');
         document.getElementById('custom-rotate-input').focus();
-        document.querySelectorAll('.rotate-opt').forEach(b =>
-          b.classList.toggle('active', b.dataset.rotate === 'custom'));
         return;
       }
       const ms = parseInt(val);
