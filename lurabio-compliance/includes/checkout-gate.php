@@ -9,7 +9,7 @@ function lurabio_render_compliance_checkbox(): void {
     $label = wp_kses(
         '<strong>LuraBio Research Use Only Agreement.</strong> '
         . 'I confirm that all products purchased from LuraBio are intended solely '
-        . 'for laboratory research purposes. These reagents are not for use in humans, '
+        . 'for laboratory research purposes. These peptides are not for use in humans, '
         . 'animals, food, cosmetics, or any in vivo applications.',
         [ 'strong' => [] ]
     );
